@@ -3,6 +3,7 @@ columnas= 8
 filas= 8
 gato="🐈"
 raton="🐁"
+queso="🧀"
 
 
 #...bucle compacto
@@ -17,4 +18,5 @@ print(tablero)
 
 #...colocar al gato y al raton
 
+print("hello sam")
 
