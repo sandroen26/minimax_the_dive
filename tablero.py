@@ -1,45 +1,41 @@
 import random
 import copy
 
-# Variables
+# Las Variables
 COLUMNAS = 5
 FILAS = 5
 pos_gato = (0, 0)
 pos_raton = (4, 4)
 pos_queso = (2, 2)
+MAX_TURNOS = 30
 
-# Matriz vacía
-matriz = [["[]" for _ in range(COLUMNAS)] for _ in range(FILAS)]
+# Tablero - Matriz 
+#matriz = [["-" for _ in range(COLUMNAS)] for _ in range(FILAS)]
 
 def mostrar_tablero(pos_gato, pos_raton, pos_queso):
     for i in range(FILAS):
         fila_str = ""
         for j in range(COLUMNAS):
             if (i, j) == pos_gato:
-                fila_str += " G "   # Gato
+                fila_str += " 🐈 "   # Gato
             elif (i, j) == pos_raton:
-                fila_str += " R "   # Ratón
+                fila_str += " 🐁 "   # Ratón
             elif (i, j) == pos_queso:
-                fila_str += " Q "   # Queso
+                fila_str += " 🧀 "   # Queso
             else:
-                fila_str += " . "   # Celda vacía
+                fila_str += " [] "   # Celda vacía
         print(fila_str)
     print()
 
 mostrar_tablero(pos_gato, pos_raton, pos_queso)
 
-def movimientos_validos(pos, filas, columnas, direcciones=4):
+def movimientos_validos(pos, filas, columnas):
     fila, col = pos
     movimientos = []
     
     # 4 direcciones: arriba, abajo, izquierda, derecha
-    deltas_4 = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-    
-    # 8 direcciones: agrega las diagonales
-    deltas_8 = deltas_4 + [(-1, -1), (-1, 1), (1, -1), (1, 1)]
-    
-    deltas = deltas_8 if direcciones == 8 else deltas_4
-    
+    deltas = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+        
     for df, dc in deltas:
         nueva_fila = fila + df
         nueva_col = col + dc
@@ -48,10 +44,10 @@ def movimientos_validos(pos, filas, columnas, direcciones=4):
     
     return movimientos
 
-print("Movimientos del gato:", movimientos_validos(pos_gato, FILAS, COLUMNAS))
-print("Movimientos del ratón:", movimientos_validos(pos_raton, FILAS, COLUMNAS))
+#print("Movimientos del gato:", movimientos_validos(pos_gato, FILAS, COLUMNAS))
+#print("Movimientos del ratón:", movimientos_validos(pos_raton, FILAS, COLUMNAS))
 
-MAX_TURNOS = 30  # si el ratón sobrevive X turnos, gana
+MAX_TURNOS = 30  # si el ratón sobrevive X turnos, gana!
 
 def verificar_fin(pos_gato, pos_raton, pos_queso, turno):
     if pos_gato == pos_raton:
@@ -134,5 +130,4 @@ def minimax(pos_gato, pos_raton, pos_queso, profundidad, es_turno_gato, filas, c
             valor = minimax(pos_gato, mov, pos_queso, profundidad - 1, True, filas, columnas)
             mejor = max(mejor, valor)
         return mejor
-    
     

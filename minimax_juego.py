@@ -3,12 +3,12 @@
 import os, time
 
 # VARIABLES GLOBALES
-filas, columnas = 8, 8
+filas, columnas = 5, 5
 matriz = []
 pos_gato = {"f": 0, "c": 0}
-pos_raton = {"f": 7, "c": 7}
-pos_queso = {"f": 4, "c": 4}
-profundidad = 4
+pos_raton = {"f": 4, "c": 4}
+pos_queso = {"f": 0, "c": 4}
+profundidad = 3
 nodos, podas = 0, 0
 
 # FUNCIONES BÁSICAS
