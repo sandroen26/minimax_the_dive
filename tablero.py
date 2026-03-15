@@ -7,7 +7,7 @@ FILAS = 5
 pos_gato = (0, 0)
 pos_raton = (4, 4)
 pos_queso = (2, 2)
-MAX_TURNOS = 30
+MAX_TURNOS = 30  # si el ratón sobrevive X turnos, gana!
 
 # Tablero - Matriz 
 #matriz = [["-" for _ in range(COLUMNAS)] for _ in range(FILAS)]
@@ -47,7 +47,6 @@ def movimientos_validos(pos, filas, columnas):
 #print("Movimientos del gato:", movimientos_validos(pos_gato, FILAS, COLUMNAS))
 #print("Movimientos del ratón:", movimientos_validos(pos_raton, FILAS, COLUMNAS))
 
-MAX_TURNOS = 30  # si el ratón sobrevive X turnos, gana!
 
 def verificar_fin(pos_gato, pos_raton, pos_queso, turno):
     if pos_gato == pos_raton:
