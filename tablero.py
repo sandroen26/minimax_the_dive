@@ -1,3 +1,4 @@
+#librerias
 import random
 import sys
 sys.stdout.reconfigure(encoding='utf-8')
@@ -30,10 +31,13 @@ def mostrar_tablero(pos_gato, pos_raton, pos_queso):
 
 mostrar_tablero(pos_gato, pos_raton, pos_queso)
 
+#movimientos validos
+#calcula las posiciones dende un personaje puede moverse
 def movimientos_validos(pos, filas, columnas):
     fila, col = pos
     movimientos = []
     
+    #Usa coordenadas y deltas para simplificar la logica.
     # 4 direcciones: arriba, abajo, izquierda, derecha
     deltas = [(-1, 0), (1, 0), (0, -1), (0, 1)]
         
@@ -45,10 +49,9 @@ def movimientos_validos(pos, filas, columnas):
     
     return movimientos
 
-#print("Movimientos del gato:", movimientos_validos(pos_gato, FILAS, COLUMNAS))
-#print("Movimientos del ratón:", movimientos_validos(pos_raton, FILAS, COLUMNAS))
 
-
+#verificacion de fin del juego
+#revisa si el juego termino: gato atrapo al raton, raton llego al queso o se agotaron los turnos.
 def verificar_fin(pos_gato, pos_raton, pos_queso, turno):
     if pos_gato == pos_raton:
         print(f"😼 ¡El gato atrapó al ratón en el turno {turno}! Gato gana.")
@@ -64,6 +67,10 @@ def verificar_fin(pos_gato, pos_raton, pos_queso, turno):
     
     return False
 
+#movimientos aleatorios y funcion principal
+#define como se mueve el raton y el gato (aleatoriamente)
+#muestra el tablero cada turno
+#revisa si el juego termino
 def mover_raton_aleatorio(pos_raton, filas, columnas):
     movimientos = movimientos_validos(pos_raton, filas, columnas)
     return random.choice(movimientos)
@@ -81,7 +88,7 @@ def jugar():
         turno += 1
         print(f"--- Turno {turno} ---")
 
-        # Por ahora el gato también se mueve al azar (lo haremos inteligente en paso 5)
+        # Por ahora el gato también se mueve al azar (lo haremos inteligente en el sigt paso)
         pos_gato = mover_raton_aleatorio(pos_gato, FILAS, COLUMNAS)
 
         # El ratón se mueve al azar
@@ -94,6 +101,10 @@ def jugar():
 
 jugar()
 
+#evaluacion y minimax (ia futura)
+#calcula la distancia manhattan
+#evalua que posiciones son mejores para el raton o el gato
+#implementa minimax para ia (aunque por ahora el juego lo mueve aleatoriamente)
 def distancia(pos1, pos2):
     # Distancia Manhattan: cuántos pasos hay entre dos puntos
     return abs(pos1[0] - pos2[0]) + abs(pos1[1] - pos2[1])
