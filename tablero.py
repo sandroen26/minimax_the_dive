@@ -1,4 +1,6 @@
 import random
+import sys
+sys.stdout.reconfigure(encoding='utf-8')
 
 # Las Variables
 COLUMNAS = 5
@@ -12,14 +14,14 @@ MAX_TURNOS = 30  # si el ratón sobrevive X turnos, gana!
 #matriz = [["-" for _ in range(COLUMNAS)] for _ in range(FILAS)]
 
 def mostrar_tablero(pos_gato, pos_raton, pos_queso):
-    for i in range(FILAS):
+    for x in range(FILAS):
         fila_str = ""
-        for j in range(COLUMNAS):
-            if (i, j) == pos_gato:
+        for y in range(COLUMNAS):
+            if (x, y) == pos_gato:
                 fila_str += " 🐈 "   # Gato
-            elif (i, j) == pos_raton:
+            elif (x, y) == pos_raton:
                 fila_str += " 🐁 "   # Ratón
-            elif (i, j) == pos_queso:
+            elif (x, y) == pos_queso:
                 fila_str += " 🧀 "   # Queso
             else:
                 fila_str += " [] "   # Celda vacía
