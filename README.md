@@ -15,6 +15,7 @@ Antes de dar un paso en la pantalla, el programa simula los posibles movimientos
 
 Herramientas utilizadas Lenguaje: Python
 
-Librerías: random y copy (incluidas por defecto en Python).
+Librerías: random y import sys
+sys.stdout.reconfigure(encoding='utf-8') (incluidas por defecto en Python).
 
 Estructuras: Uso de diccionarios para organizar los datos de la partida y matrices bidimensionales para el tablero.
