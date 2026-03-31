@@ -33,7 +33,6 @@ def mostrar_tablero(pos_gato, pos_raton, pos_queso):
             else:
                 fila_str += " [] "
         print(fila_str)
-    print()
 
 # ----------------------------------------
 # MOVIMIENTOS VÁLIDOS
