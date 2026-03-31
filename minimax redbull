@@ -1,1 +1,255 @@
+import random
+import sys
+sys.stdout.reconfigure(encoding='utf-8')
 
+# ----------------------------------------
+# CONFIGURACIÓN
+# ----------------------------------------
+
+FILAS = 5
+COLUMNAS = 5
+MAX_TURNOS = 30
+
+POS_GATO_INICIAL = (0, 0)
+POS_RATON_INICIAL = (4, 4)
+POS_QUESO = (2, 2)
+
+PROFUNDIDAD = 4  # profundidad del minimax
+
+# ----------------------------------------
+# TABLERO
+# ----------------------------------------
+
+def mostrar_tablero(pos_gato, pos_raton, pos_queso):
+    for f in range(FILAS):
+        fila_str = ""
+        for c in range(COLUMNAS):
+            if (f, c) == pos_gato:
+                fila_str += " 🐈 "
+            elif (f, c) == pos_raton:
+                fila_str += " 🐁 "
+            elif (f, c) == pos_queso:
+                fila_str += " 🧀 "
+            else:
+                fila_str += " [] "
+        print(fila_str)
+    print()
+
+# ----------------------------------------
+# MOVIMIENTOS VÁLIDOS
+# ----------------------------------------
+
+def movimientos_validos(pos):
+    fila, col = pos
+    movimientos = []
+
+    # Movimientos en cruz
+    # arriba, abajo, izquierda, derecha
+    deltas = [(-1,0),(1,0),(0,-1),(0,1)]
+    
+# direccion fila , direccion columna 
+# nueva fila, nueva columna
+    for df, dc in deltas:
+        nf, nc = fila + df, col + dc
+        if 0 <= nf < FILAS and 0 <= nc < COLUMNAS:
+            movimientos.append((nf, nc))
+
+    return movimientos
+
+# ----------------------------------------
+# DISTANCIA MANHATTAN
+# ----------------------------------------
+
+def distancia(p1, p2):
+    return abs(p1[0] - p2[0]) + abs(p1[1] - p2[1])
+
+# ----------------------------------------
+# HEURÍSTICA
+# ----------------------------------------
+
+def evaluar(pos_gato, pos_raton, pos_queso):
+    """
+    Valor alto = bueno para el ratón
+    Valor bajo = bueno para el gato
+    """
+    dist_gato_raton = distancia(pos_gato, pos_raton)
+    dist_raton_queso = distancia(pos_raton, pos_queso)
+
+    return dist_gato_raton - dist_raton_queso
+
+# ----------------------------------------
+# MINIMAX
+# ----------------------------------------
+
+def minimax(pos_gato, pos_raton, pos_queso, profundidad, es_turno_gato):
+
+    # Casos base
+    if pos_gato == pos_raton:
+        return -1000  # gana el gato
+
+    if pos_raton == pos_queso:
+        return 1000   # gana el ratón
+
+    if profundidad == 0:
+        return evaluar(pos_gato, pos_raton, pos_queso)
+
+    # TURNO DEL GATO (MINIMIZA)
+    if es_turno_gato:
+        mejor = float('inf')
+
+        for mov in movimientos_validos(pos_gato):
+            valor = minimax(mov, pos_raton, pos_queso, profundidad - 1, False)
+            mejor = min(mejor, valor)
+
+        return mejor
+
+    # TURNO DEL RATÓN (MAXIMIZA)
+    else:
+        mejor = float('-inf')
+
+        for mov in movimientos_validos(pos_raton):
+            valor = minimax(pos_gato, mov, pos_queso, profundidad - 1, True)
+            mejor = max(mejor, valor)
+
+        return mejor
+
+# ----------------------------------------
+# MEJOR MOVIMIENTO DEL GATO (USA MINIMAX)
+# ----------------------------------------
+
+def mejor_movimiento_gato(pos_gato, pos_raton, pos_queso):
+    mejor_valor = float('inf')
+    mejor_mov = pos_gato
+
+    for mov in movimientos_validos(pos_gato):
+
+        # Simula el movimiento del gato
+        valor = minimax(mov, pos_raton, pos_queso, PROFUNDIDAD, False)
+
+        # El gato elige el menor valor
+        if valor < mejor_valor:
+            mejor_valor = valor
+            mejor_mov = mov
+
+    return mejor_mov
+
+#----------------------------------------
+# MOVIMIENTO RANDOM PARA GATO
+#----------------------------------------
+
+def mejor_movimiento_gato(pos_gato, pos_raton, pos_queso):
+
+    mejor_valor = float('inf')
+    mejores_movimientos = []
+
+    for mov in movimientos_validos(pos_gato):
+
+        valor = minimax(mov, pos_raton, pos_queso, PROFUNDIDAD, False)
+
+        # caso 1: mejor valor encontrado
+        if valor < mejor_valor:
+            mejor_valor = valor
+            mejores_movimientos = [mov]  # reinicia lista
+
+        # caso 2: empate con el mejor
+        elif valor == mejor_valor:
+            mejores_movimientos.append(mov)
+
+    # elegir uno aleatorio entre los mejores
+    return random.choice(mejores_movimientos)
+
+# ----------------------------------------
+# MEJOR MOVIMIENTO DEL RATÓN (USA MINIMAX)
+# ----------------------------------------
+
+def mejor_movimiento_raton(pos_gato, pos_raton, pos_queso):
+    mejor_valor = float('-inf')
+    mejor_mov = pos_raton
+
+    for mov in movimientos_validos(pos_raton):
+
+        # Simula el movimiento del ratón
+        valor = minimax(pos_gato, mov, pos_queso, PROFUNDIDAD, True)
+
+        # El ratón elige el mayor valor
+        if valor > mejor_valor:
+            mejor_valor = valor
+            mejor_mov = mov
+
+    return mejor_mov
+
+# -----------------------------------------
+# MOVIMIENTO RANDOM GATO
+#------------------------------------------
+
+def mejor_movimiento_raton(pos_gato, pos_raton, pos_queso):
+
+    mejor_valor = float('-inf')
+    mejores_movimientos = []
+
+    for mov in movimientos_validos(pos_raton):
+
+        valor = minimax(pos_gato, mov, pos_queso, PROFUNDIDAD, True)
+
+        if valor > mejor_valor:
+            mejor_valor = valor
+            mejores_movimientos = [mov]
+
+        elif valor == mejor_valor:
+            mejores_movimientos.append(mov)
+
+    return random.choice(mejores_movimientos)
+
+# ----------------------------------------
+# FIN DEL JUEGO
+# ----------------------------------------
+
+def verificar_fin(pos_gato, pos_raton, pos_queso, turno):
+
+    if pos_gato == pos_raton:
+        print(f"😼 El gato atrapó al ratón en el turno {turno}")
+        return True
+
+    if pos_raton == pos_queso:
+        print(f"🧀 El ratón llegó al queso en el turno {turno}")
+        return True
+
+    if turno >= MAX_TURNOS:
+        print("⏰ Empate")
+        return True
+
+    return False
+
+# ----------------------------------------
+# JUEGO PRINCIPAL
+# ----------------------------------------
+
+def jugar():
+    gato = POS_GATO_INICIAL
+    raton = POS_RATON_INICIAL
+    queso = POS_QUESO
+
+    turno = 0
+
+    print("=== 🧠 IA vs IA: GATO vs RATÓN ===\n")
+
+    while True:
+        turno += 1
+        print(f"--- Turno {turno} ---")
+
+        # 🐈 GATO USA MINIMAX (MIN)
+        gato = mejor_movimiento_gato(gato, raton, queso)
+
+        # 🐁 RATÓN USA MINIMAX (MAX)
+        raton = mejor_movimiento_raton(gato, raton, queso)
+
+        mostrar_tablero(gato, raton, queso)
+
+        if verificar_fin(gato, raton, queso, turno):
+            break
+
+# ----------------------------------------
+# EJECUCIÓN
+# ----------------------------------------
+
+jugar()
